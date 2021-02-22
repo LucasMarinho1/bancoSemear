@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
@@ -63,6 +64,7 @@ public class controllerApi {
 	    @ApiResponse(code = 500, message = "Foi gerada uma exceção"),
 	})
     @GetMapping(value = "consultarUser")
+	@Cacheable(value = "consultUser")
 	public Iterable<usuario> consultUser(Model model) {
     	Iterable<usuario> results =  Repositorio.findAll();
        
@@ -79,6 +81,7 @@ public class controllerApi {
     }
 	
 	@GetMapping(value = "consultarAnuncio")
+	@Cacheable(value = "consultAnuncio")
 	public Iterable<anuncio> consultAnuncio(Model model) {
     	Iterable<anuncio> results =  RepositorioAnuncio.findAll();
        
@@ -87,6 +90,7 @@ public class controllerApi {
 	}
 	
 	@RequestMapping(method=RequestMethod.POST, value="/raioanuncio")
+	
     public List<anuncio> raioAnuncio(@RequestBody anuncio anuncio) {
     	List<anuncio> list = new ArrayList<>();
     	
@@ -94,19 +98,24 @@ public class controllerApi {
     	 while (result.hasNext()) {
              anuncio str = result.next();
              
-             double raio = (6371 * Math.acos(
-            		 Math.cos(Math.toRadians(anuncio.getLatitude()))*
-            		 Math.cos(Math.toRadians(str.getLatitude()))*
-            		 Math.cos(Math.toRadians(anuncio.getLongitude())-Math.toRadians(str.getLongitude()))+
-            		 Math.sin(Math.toRadians(anuncio.getLatitude())) *
-            		 Math.sin(Math.toRadians(str.getLatitude()))
-            		 ));
+             double raio = calcularaio(anuncio,str);
              
              if (raio < 0.0015) {
             	 list.add(str);
 			}
           }
         return  list;
+    }
+    
+    @Cacheable(value = "calcularaio")
+    public double calcularaio (anuncio anuncio, anuncio str) {
+    	return (6371 * Math.acos(
+       		 Math.cos(Math.toRadians(anuncio.getLatitude()))*
+       		 Math.cos(Math.toRadians(str.getLatitude()))*
+       		 Math.cos(Math.toRadians(anuncio.getLongitude())-Math.toRadians(str.getLongitude()))+
+       		 Math.sin(Math.toRadians(anuncio.getLatitude())) *
+       		 Math.sin(Math.toRadians(str.getLatitude()))
+       		 ));
     }
     
 	/* Contador foi feito desta forma, pois devido a quantidade de acessos poderia duplicar os registros do contador

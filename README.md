@@ -1,6 +1,9 @@
 # Api de Propaganda
 Trata-se de um Api para propaganda de empresas que estao proximas ao usuario do sistema.
 
+OBS: para rodar a API sera necessario gerar um token, atraves do [http://localhost:8080/authenticate](http://localhost:8080/authenticate),
+e colocar no Postman, o arquivo do postman ja possui esse token, porem sera necessario atualiza-lo.
+
 ## Executar/Compilar
 
 **Utilizados**
@@ -9,8 +12,6 @@ Trata-se de um Api para propaganda de empresas que estao proximas ao usuario do 
 - Git (2.27.0.windows.1)
 - Spring Boot (2.3.1.RELEASE)
 - Java (1.8)
-- Bootstrap (4.0.0-2)
-- jquery (2.1.4)
 - Datatables (1.10.19)
 - Banco de dados H2
 
@@ -39,7 +40,7 @@ para acessar --> http://localhost:8080/swagger-ui.html
 
 - **Driver Class:** org.h2.Driver
 - **JDBC URL:** jdbc:h2:mem:testdb
-- **User Name:** sa
+- **User Name:**
 - **Password:**
 
 [http://localhost:8080/h2-console](http://localhost:8080/h2-console)
